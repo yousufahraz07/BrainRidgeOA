@@ -8,10 +8,17 @@ defining the reason for the error.
 
 export const handler = async (event) => {
 
+
+   
+
     
     let firstName, lastName;            //Variables to store the first and last names
 
     try {
+        if (!event.body)                       //Special case: If endpoint is accessed without a body, throw a 400 Bad Request error with a message.
+        {
+        throw { kind: "JSON Error", message: "Request body is missing." };
+    }
   
             // if (event.httpMethod !== "GET") {    // OPTIONAL: Checking if the request type is GET, can be modified
             //     throw {                          //           to enforce typechecking for other kinds of requests.     
@@ -90,7 +97,7 @@ export const handler = async (event) => {
         
     } catch (error) {
 
-        if(error.kind == "Validation Error" || error.kind == "Parameter Error" || error.kind == "Request Error" || error.kind =="Syntax Error" )
+        if(error.kind == "Validation Error" || error.kind == "Parameter Error" || error.kind == "Request Error" || error.kind =="Syntax Error" || error.kind == "JSON Error") //If the error kind is one of the above, returns a 400 Bad Request status code with the error message.
         {
         return {
             statusCode: 400,    //throws a 400 Bad Request status code if one of the above validation errors occur.
